@@ -1,0 +1,19 @@
+
+
+1- Listing consumer groups :
+
+kafka-consumer-groups --bootstrap-server 127.0.0.1:9092 --list
+
+2- View consumer groups :
+
+kafka-consumer-groups --bootstrap-server 127.0.0.1:9092 --describe --group my-first-application
+
+If you find some lags, open the consumer again to catch up :
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application
+
+3- to obtain consumer id/host : 
+- Open 1st cmd :
+	kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application
+- open 2nd cmd : 
+	kafka-consumer-groups --bootstrap-server 127.0.0.1:9092 --describe --group my-first-application

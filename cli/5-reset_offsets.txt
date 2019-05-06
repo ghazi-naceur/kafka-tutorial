@@ -1,0 +1,17 @@
+
+
+Reset : Producer and Consumer must be shutdown
+	kafka-consumer-groups --bootstrap-server 127.0.0.1:9092 --group my-first-application --reset-offsets --to-earliest --execute --topic first_topic
+	
+	
+When consulting data again, we will obtain it all :
+	kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application
+		
+Reset and Shifting forward :
+	kafka-consumer-groups --bootstrap-server localhost:9092 --group my-first-application --reset-offsets --shift-by 2 --execute --topic first_topic
+	
+Reset and Shifting backward : 
+	kafka-consumer-groups --bootstrap-server localhost:9092 --group my-first-application --reset-offsets --shift-by -2 --execute --topic first_topic
+	
+Consult again : 2 shifts x 3 partitions = we should see 6 messages only when consulting !
+	kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application

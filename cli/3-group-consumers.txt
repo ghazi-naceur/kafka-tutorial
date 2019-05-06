@@ -1,0 +1,13 @@
+
+
+- 2 console consumers for for the same producer 
+
+kafka-console-producer --broker-list 127.0.0.1:9092 --topic first_topic
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-first-application
+
+- from beginning : 
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic first_topic --group my-second-application --from-beginning

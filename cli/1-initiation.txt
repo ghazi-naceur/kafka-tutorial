@@ -1,0 +1,43 @@
+
+
+zkserver
+
+cd C:\kafka_2.12-2.2.0
+
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+
+
+
+1- Start Zookeeper :
+
+cd C:\kafka_2.12-2.2.0\bin\windows
+
+zookeeper-server-start.bat ..\..\config\zookeeper.properties
+
+2- Start Kafka :
+
+cd C:\kafka_2.12-2.2.0\bin\windows
+
+kafka-server-start.bat ..\..\config\server.properties
+
+3- Create Topic with CLI :
+
+cd C:\kafka_2.12-2.2.0\bin\windows
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic first_topic --create --partitions 3 --replication-factor 1
+
+4- List topics :
+
+kafka-topics --zookeeper 127.0.0.1:2181 --list
+
+5- View topic : 
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic first_topic --describe
+
+6- Delete topic :
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic second_topic --delete
+
+In windows, this feature shows a bug KAFKA 1194. In order to delete a topic, you need to delete topic related folders under /data
+
