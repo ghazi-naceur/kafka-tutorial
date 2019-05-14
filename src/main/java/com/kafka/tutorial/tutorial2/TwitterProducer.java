@@ -88,7 +88,7 @@ public class TwitterProducer {
         // Optional: set up some followings and track terms
         //        List<Long> followings = Lists.newArrayList(1234L, 566788L);
         //        hosebirdEndpoint.followings(followings);
-        List<String> terms = Lists.newArrayList("kafka");
+        List<String> terms = Lists.newArrayList("kafka", "bitcoin", "java", "scala", "nosql", "bigdata");
         hosebirdEndpoint.trackTerms(terms);
 
         // These secrets should be read from a config file
@@ -122,6 +122,11 @@ public class TwitterProducer {
         properties.setProperty(ACKS_CONFIG, "all");
         properties.setProperty(RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
         properties.setProperty(MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+
+        // high throughput producer (at the expense of a bit latency and CPU usage)
+        properties.setProperty(COMPRESSION_TYPE_CONFIG, "snappy");
+        properties.setProperty(LINGER_MS_CONFIG, "20");
+        properties.setProperty(BATCH_SIZE_CONFIG, Integer.toString(32 * 1024)); // 32 KB batch size
 
         return new KafkaProducer<>(properties);
     }
