@@ -109,14 +109,20 @@ public class TwitterProducer {
         return builder.build();
     }
 
-    public KafkaProducer<String, String> createKafkaProducer() {
+    private KafkaProducer<String, String> createKafkaProducer() {
+        // Create Producer
         Properties properties = new Properties();
         String server = "127.0.0.1:9092";
         properties.setProperty(BOOTSTRAP_SERVERS_CONFIG, server);
         properties.setProperty(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-//        Create Producer
+        // Create Safe Producer
+        properties.setProperty(ENABLE_IDEMPOTENCE_CONFIG, "true");
+        properties.setProperty(ACKS_CONFIG, "all");
+        properties.setProperty(RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+        properties.setProperty(MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+
         return new KafkaProducer<>(properties);
     }
 }
