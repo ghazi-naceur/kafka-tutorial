@@ -1,4 +1,4 @@
-package com.kafka.tutorial.tutorial2;
+package com.kafka.tutorial.tutorial2.twitter;
 
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
