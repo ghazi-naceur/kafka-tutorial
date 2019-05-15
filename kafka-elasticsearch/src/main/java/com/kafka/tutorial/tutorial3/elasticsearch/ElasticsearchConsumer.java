@@ -18,7 +18,9 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Ghazi Naceur on 14/05/2019
@@ -32,18 +34,26 @@ public class ElasticsearchConsumer {
 
         /**
          * Need to run :
-         * PUT twitter/_settings
-         * {
-         *   "index.mapping.depth.limit" : 50
-         * }
+         PUT twitter/_settings
+         {
+         "index.mapping.depth.limit": 1000,
+         "index.mapping.total_fields.limit": 2000
+         }
+
          * To avoid :
          * "type":"illegal_argument_exception","reason":"Limit of mapping
          *  depth [20] in index [twitter] has been exceeded due to object field
+         *
+         *  and
+         *
+         *  "type":"illegal_argument_exception","reason":"Limit of total
+         *  fields [1000] in index [twitter] has been exceeded"
          */
 
         KafkaConsumer<String, String> consumer = createKafkaConsumer("twitter_tweets");
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            System.out.println("Received records : " + records.count());
             for (ConsumerRecord record : records) {
                 // String id = record.topic() + "_" + record.partition() + "_" + record.offset();
                 Map<String, Object> source = getJsonStringAsMap(record);
@@ -54,10 +64,18 @@ public class ElasticsearchConsumer {
                 IndexResponse response = client.index(request, RequestOptions.DEFAULT);
                 System.out.println(response.getId());
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            System.out.println("Committing the offsets... ");
+            consumer.commitSync();
+            System.out.println("Offsets have been committed");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
@@ -87,6 +105,8 @@ public class ElasticsearchConsumer {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"); // disable auto commit of offsets
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "20");
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
         consumer.subscribe(Arrays.asList(topic));
