@@ -45,8 +45,11 @@ public class ElasticsearchConsumer {
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord record : records) {
+                // String id = record.topic() + "_" + record.partition() + "_" + record.offset();
                 Map<String, Object> source = getJsonStringAsMap(record);
-                IndexRequest request = new IndexRequest("twitter", "tweets")
+                String id_str = source.get("id_str").toString(); // The aim of inserting a known id is to make the consumer idempotent
+                // So if we want to restart our program, it will not reindex the same document twice, because it is already indexed with id_str
+                IndexRequest request = new IndexRequest("twitter", "tweets", id_str)
                         .source(source, XContentType.JSON);
                 IndexResponse response = client.index(request, RequestOptions.DEFAULT);
                 System.out.println(response.getId());
