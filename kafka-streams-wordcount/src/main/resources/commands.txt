@@ -1,0 +1,59 @@
+
+- Exploring Producer/Consumer
+kafka-console-producer --broker-list localhost:9092 --topic second_topic
+kafka-console-consumer --bootstrap-server localhost:9092 --topic second_topic --group second_consumer_group
+kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group second_consumer_group
+kafka-console-producer --broker-list localhost:9092 --topic second_topic
+kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group second_consumer_group
+kafka-console-consumer --bootstrap-server localhost:9092 --topic second_topic --group second_consumer_group
+kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group second_consumer_group
+
+
+- Resetting offsets :
+kafka-consumer-groups --bootstrap-server localhost:9092 --group second_consumer_group --reset-offsets --to-earliest --execute --topic second_topic
+kafka-console-consumer --bootstrap-server localhost:9092 --topic second_topic --group second_consumer_group
+kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group second_consumer_group
+
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic configured_topic --create --partitions 3 --replication-factor 1
+kafka-topics --zookeeper 127.0.0.1:2181 --describe --topic configured_topic
+kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name configured_topic --describe
+
+- Testing Compaction :
+kafka-topics --zookeeper 127.0.0.1:2181 --topic employee-salary --create --partitions 1 --replication-factor 1 --config cleanup.policy=compact --config min.cleanable.dirty.ratio=0.001 --config segment.ms=5000
+kafka-topics --zookeeper 127.0.0.1:2181 --describe --topic employee-salary
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic employee-salary --from-beginning --property print.key=true --property key.separator=,
+kafka-console-producer --broker-list localhost:9092 --topic employee-salary --property parse.key=true --property key.separator=,
+    Itachi, salary: 150
+    Netero, salary: 200
+    Kakashi, salary: 120
+    Hisoka, salary: 70
+  Again :
+    Kakashi, salary: 110
+    Hisoka, salary: 60
+
+  Result :
+    Itachi, salary: 150
+    Netero, salary: 200
+    Kakashi, salary: 110
+    Hisoka, salary: 60
+
+- Testing min.insync.replicas:
+kafka-topics --zookeeper 127.0.0.1:2181 --topic highly-durable --create --partitions 1 --replication-factor 1
+kafka-configs --bootstrap-server localhost:9092 --entity-type topics --entity-name highly-durable --alter --add-config min.insync.replicas=2
+kafka-topics --zookeeper 127.0.0.1:2181 --describe --topic highly-durable
+
+- Word count example (prebuilt by apache kafka):
+kafka-console-producer --broker-list localhost:9092 --topic streams-plaintext-input
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 \
+    --topic streams-wordcount-output \
+    --from-beginning \
+    --formatter kafka.tools.DefaultMessageFormatter \
+    --property print.key=true \
+    --property print.value=true \
+    --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+    --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
+
+kafka-run-class org.apache.kafka.streams.examples.wordcount.WordCountDemo
+

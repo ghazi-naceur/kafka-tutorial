@@ -12,6 +12,7 @@
         <module>kafka-elasticsearch</module>
         <module>kafka-twitter</module>
         <module>kafka-basics</module>
+        <module>kafka-streams-wordcount</module>
     </modules>
 
 </project>
