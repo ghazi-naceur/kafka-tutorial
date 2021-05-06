@@ -1,0 +1,15 @@
+kafka-topics --zookeeper 127.0.0.1:2181 --topic input-colors --create --partitions 1 --replication-factor 1
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic output-colors --create --partitions 1 --replication-factor 1 --config cleanup.policy=compact
+
+kafka-topics --zookeeper 127.0.0.1:2181 --topic intermediate-colors --create --partitions 1 --replication-factor 1 --config cleanup.policy=compact
+
+
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 \
+    --topic output-colors \
+    --from-beginning \
+    --formatter kafka.tools.DefaultMessageFormatter \
+    --property print.key=true \
+    --property print.value=true \
+    --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+    --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer

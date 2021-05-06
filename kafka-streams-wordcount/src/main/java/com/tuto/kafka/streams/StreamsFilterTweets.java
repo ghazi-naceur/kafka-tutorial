@@ -1,4 +1,4 @@
-package streams;
+package com.tuto.kafka.streams;
 
 import com.google.gson.JsonParser;
 import org.apache.kafka.common.serialization.Serdes;
