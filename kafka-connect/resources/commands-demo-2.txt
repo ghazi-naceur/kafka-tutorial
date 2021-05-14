@@ -16,11 +16,3 @@ echo "something" >> demo-file.txt
 
 5- Create consumer :
 kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic demo-2-distributed --from-beginning
-
-4- To Create a distributed connector :
-cd /tutorial/source/demo-2
-connect-distributed worker.properties file-stream-demo-distributed.properties
-
-5- Write something in the demo-file.txt in your IDE and save it
-
-6- Data in your topic (see landoop UI)
