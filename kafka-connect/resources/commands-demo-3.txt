@@ -7,3 +7,6 @@ docker run --rm -it --net=host lensesio/fast-data-dev bash
 
 3- To create a topic inside container :
 kafka-topics --zookeeper 127.0.0.1:2181 --topic demo-3-twitter --create --partitions 3 --replication-factor 1
+
+4- Create consumer :
+kafka-console-consumer --bootstrap-server 127.0.0.1:9092 --topic demo-3-twitter --from-beginning
