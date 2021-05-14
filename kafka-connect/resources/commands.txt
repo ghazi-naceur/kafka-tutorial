@@ -1,0 +1,17 @@
+
+1- To start landoop :
+docker run --rm --net=host lensesio/fast-data-dev
+
+2- To map a volume : Map current files in a docker folder (host current files to docker "tutorial" folder)
+docker run --rm -it -v "$(pwd)":/tutorial --net=host lensesio/fast-data-dev bash
+
+3- To create a topic inside container :
+kafka-topics --zookeeper 127.0.0.1:2181 --topic demo-1-standalone --create --partitions 3 --replication-factor 1
+
+4- To Create a standalone connector :
+cd /tutorial/source/demo-1
+connect-standalone worker.properties file-stream-demo-standalone.properties
+
+5- Write something in the demo-file.txt in your IDE and save it
+
+6- Data in your topic (see landoop UI)

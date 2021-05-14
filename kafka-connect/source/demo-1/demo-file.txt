@@ -1,0 +1,8 @@
+hi
+hello
+yes
+good
+scala
+kafka
+spark
+add
